@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenSearch Flask App</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .search-form { margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 8px; margin-bottom: 10px; }
+        .content-type { margin: 10px 0; }
+        .result-item { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .result-title { font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Search Documents</h1>
+
+    <form method="POST" class="search-form">
+        <input type="text" name="query" class="search-box" placeholder="Enter search term..." value="{{ request.form.get('query', '') }}">
+
+        <div class="content-type">
+            {% for content_type in content_types %}
+                <label>
+                    <input type="radio" name="content_type" value="{{ content_type }}"
+                           {% if request.form.get('content_type', content_types[0]) == content_type %}checked{% endif %}>
+                    {{ content_type|capitalize }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if results %}
+        <h2>Search Results</h2>
+        {% for result in results %}
+            <div class="result-item">
+                <div class="result-title">{{ result.title }}</div>
+                <div class="result-snippet">{{ result.snippet }}</div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
