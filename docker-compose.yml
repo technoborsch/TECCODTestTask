@@ -17,6 +17,11 @@ services:
       - "9600:9600"
     networks:
       - opensearch-net
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   app:
     build: .
@@ -24,7 +29,7 @@ services:
       - "5000:5000"
     depends_on:
       opensearch:
-        condition: service_started
+        condition: service_healthy
     networks:
       - opensearch-net
     environment:
